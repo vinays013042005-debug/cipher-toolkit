@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CipherLab | Encryption Studio</title>
 
 <style>
@@ -21,7 +22,9 @@
   --red: #ff7185;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -45,7 +48,9 @@ header {
   letter-spacing: -1px;
 }
 
-.logo span { color: var(--cyan); }
+.logo span {
+  color: var(--cyan);
+}
 
 .tag {
   font-size: 12px;
@@ -61,7 +66,10 @@ main {
   padding: 45px 20px;
 }
 
-.hero { text-align: center; margin-bottom: 35px; }
+.hero {
+  text-align: center;
+  margin-bottom: 35px;
+}
 
 .hero h1 {
   font-size: clamp(30px, 5vw, 48px);
@@ -112,7 +120,10 @@ main {
   margin-bottom: 22px;
 }
 
-.card h2 { font-size: 19px; margin: 0 0 8px; }
+.card h2 {
+  font-size: 19px;
+  margin: 0 0 8px;
+}
 
 .subtitle {
   color: var(--muted);
@@ -141,7 +152,7 @@ input, textarea, select {
   outline: none;
 }
 
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
   border-color: var(--accent);
 }
 
@@ -151,7 +162,9 @@ textarea {
   line-height: 1.6;
 }
 
-.field { margin-bottom: 20px; }
+.field {
+  margin-bottom: 20px;
+}
 
 .row {
   display: grid;
@@ -186,7 +199,9 @@ button {
   border: 1px solid var(--border);
 }
 
-button:hover { filter: brightness(1.15); }
+button:hover {
+  filter: brightness(1.15);
+}
 
 .result {
   background: #0a1221;
@@ -217,19 +232,22 @@ button:hover { filter: brightness(1.15); }
   line-height: 1.6;
 }
 
-.error { color: var(--red); }
+.error {
+  color: var(--red);
+}
 
 .matrix {
   display: grid;
-  grid-template-columns: repeat(2, 75px);
+  grid-template-columns: repeat(var(--matrix-size, 2), minmax(0, 65px));
   gap: 10px;
   justify-content: center;
   margin: 20px auto;
 }
 
 .matrix input {
+  width: 65px;
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   padding: 14px 5px;
 }
@@ -253,13 +271,6 @@ button:hover { filter: brightness(1.15); }
   color: var(--cyan);
 }
 
-.steps {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.9;
-  margin-top: 18px;
-}
-
 .info {
   background: #0b1425;
   border-left: 3px solid var(--cyan);
@@ -270,7 +281,18 @@ button:hover { filter: brightness(1.15); }
   line-height: 1.7;
 }
 
-.hidden { display: none; }
+.steps {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+  margin-top: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.hidden {
+  display: none !important;
+}
 
 footer {
   text-align: center;
@@ -281,13 +303,46 @@ footer {
 }
 
 @media(max-width:650px) {
-  main { padding: 30px 14px; }
-  .card { padding: 19px; }
-  .row { grid-template-columns: 1fr; gap: 0; }
-  .tabs { gap: 8px; }
-  .tab { padding: 12px 15px; font-size: 13px; }
-  header { padding: 18px; }
-  .tag { font-size: 10px; }
+  main {
+    padding: 30px 14px;
+  }
+
+  .card {
+    padding: 19px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .tabs {
+    gap: 8px;
+  }
+
+  .tab {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+
+  header {
+    padding: 18px;
+  }
+
+  .tag {
+    font-size: 10px;
+  }
+
+  .matrix {
+    gap: 6px;
+    grid-template-columns: repeat(var(--matrix-size, 2), minmax(0, 55px));
+  }
+
+  .matrix input {
+    width: 55px;
+    padding: 12px 2px;
+    font-size: 16px;
+  }
 }
 </style>
 </head>
@@ -300,6 +355,7 @@ footer {
 </header>
 
 <main>
+
   <section class="hero">
     <h1>Encryption <span>Studio</span></h1>
     <p>
@@ -308,147 +364,246 @@ footer {
     </p>
   </section>
 
+  <!-- CIPHER TABS -->
+
   <div class="tabs">
     <button class="tab active" id="playTab"
-      onclick="switchCipher('playfair')">Playfair Cipher</button>
+      onclick="switchCipher('playfair')">
+      Playfair Cipher
+    </button>
+
     <button class="tab" id="hillTab"
-      onclick="switchCipher('hill')">Hill Cipher</button>
+      onclick="switchCipher('hill')">
+      Hill Cipher
+    </button>
   </div>
 
+  <!-- ================================== -->
   <!-- PLAYFAIR CIPHER -->
+  <!-- ================================== -->
 
   <section id="playfair">
 
     <div class="card">
+
       <h2>Playfair Cipher</h2>
+
       <p class="subtitle">
-        Encrypt or decrypt using a 5 × 5 key matrix.
+        Encrypt and decrypt messages using a 5 × 5 key matrix.
         I and J are treated as the same letter.
       </p>
 
       <div class="field">
         <label for="pkey">Secret Keyword</label>
-        <input id="pkey" value="MONARCHY"
+
+        <input id="pkey"
+          type="text"
+          value="MONARCHY"
           placeholder="Enter keyword">
+
       </div>
 
       <div class="field">
         <label for="ptext">Input Message</label>
+
         <textarea id="ptext"
           placeholder="Enter plaintext or ciphertext...">HELLO</textarea>
       </div>
 
       <div class="buttons">
-        <button class="primary" onclick="runPlayfair('encrypt')">
+
+        <button class="primary"
+          onclick="runPlayfair('encrypt')">
           Encrypt →
         </button>
-        <button class="secondary" onclick="runPlayfair('decrypt')">
+
+        <button class="secondary"
+          onclick="runPlayfair('decrypt')">
           ← Decrypt
         </button>
-        <button class="secondary" onclick="clearPlayfair()">
+
+        <button class="secondary"
+          onclick="clearPlayfair()">
           Clear
         </button>
+
       </div>
 
       <div id="presult" class="result">
+
         <h3 id="presultTitle">CIPHERTEXT</h3>
+
         <div class="output" id="poutput"></div>
+
         <div class="buttons">
-          <button class="secondary" onclick="copyText('poutput')">
+          <button class="secondary"
+            onclick="copyText('poutput')">
             Copy Result
           </button>
         </div>
+
         <div class="status" id="pstatus"></div>
+
       </div>
+
     </div>
 
+    <!-- PLAYFAIR GRID -->
+
     <div class="card">
+
       <h2>5 × 5 Playfair Key Matrix</h2>
+
       <p class="subtitle">
-        The matrix is automatically generated from your keyword.
+        The matrix is generated automatically from your keyword.
         Duplicate letters are removed and J is merged with I.
       </p>
+
       <div class="grid5" id="pgrid"></div>
+
       <div class="info">
-        Same row: move right for encryption.<br>
-        Same column: move down for encryption.<br>
-        Rectangle: exchange the columns of the two letters.
+        <b>Encryption rules</b><br>
+        Same row: replace each letter with the letter to its right.<br>
+        Same column: replace each letter with the letter below it.<br>
+        Rectangle: replace each letter with the letter in the
+        same row and the other letter's column.<br><br>
+
         Decryption reverses the row and column directions.
+        Repeated letters in a pair are separated using X.
       </div>
+
     </div>
 
   </section>
 
+  <!-- ================================== -->
   <!-- HILL CIPHER -->
+  <!-- ================================== -->
 
   <section id="hill" class="hidden">
 
     <div class="card">
+
       <h2>Hill Cipher</h2>
+
       <p class="subtitle">
         Matrix-based encryption using modular arithmetic.
-        Enter a 2 × 2 key matrix with an inverse modulo 26.
+        Select a 2 × 2 or 3 × 3 key matrix.
       </p>
 
-      <label>Key Matrix (2 × 2)</label>
-      <div class="matrix">
-        <input id="k00" type="number" value="3" aria-label="Row 1 column 1">
-        <input id="k01" type="number" value="3" aria-label="Row 1 column 2">
-        <input id="k10" type="number" value="2" aria-label="Row 2 column 1">
-        <input id="k11" type="number" value="5" aria-label="Row 2 column 2">
+      <!-- MATRIX SIZE -->
+
+      <div class="field">
+
+        <label for="matrixSize">Matrix Size</label>
+
+        <select id="matrixSize" onchange="renderMatrix()">
+
+          <option value="2">2 × 2 Matrix</option>
+
+          <option value="3">3 × 3 Matrix</option>
+
+        </select>
+
       </div>
 
+      <!-- DYNAMIC KEY MATRIX -->
+
+      <label>Key Matrix</label>
+
+      <div id="hillMatrix" class="matrix"></div>
+
       <div class="info">
-        Default key: [[3, 3], [2, 5]].<br>
         A = 0, B = 1, ..., Z = 25.<br>
-        The determinant must be relatively prime to 26.
+        The determinant must be relatively prime to 26
+        for the matrix to have an inverse modulo 26.<br>
+        All matrix values are automatically reduced modulo 26.
       </div>
+
+      <!-- INPUT MESSAGE -->
 
       <div class="field" style="margin-top:22px">
+
         <label for="htext">Input Message</label>
+
         <textarea id="htext"
           placeholder="Enter plaintext or ciphertext...">HI</textarea>
+
       </div>
+
+      <!-- BUTTONS -->
 
       <div class="buttons">
-        <button class="primary" onclick="runHill('encrypt')">
+
+        <button class="primary"
+          onclick="runHill('encrypt')">
           Encrypt →
         </button>
-        <button class="secondary" onclick="runHill('decrypt')">
+
+        <button class="secondary"
+          onclick="runHill('decrypt')">
           ← Decrypt
         </button>
-        <button class="secondary" onclick="clearHill()">
+
+        <button class="secondary"
+          onclick="clearHill()">
           Clear
         </button>
+
       </div>
+
+      <!-- RESULT -->
 
       <div id="hresult" class="result">
+
         <h3 id="hresultTitle">CIPHERTEXT</h3>
+
         <div class="output" id="houtput"></div>
+
         <div class="buttons">
-          <button class="secondary" onclick="copyText('houtput')">
+
+          <button class="secondary"
+            onclick="copyText('houtput')">
             Copy Result
           </button>
+
         </div>
+
         <div class="status" id="hstatus"></div>
+
       </div>
+
     </div>
 
+    <!-- HILL EXPLANATION -->
+
     <div class="card">
+
       <h2>How Hill Cipher Works</h2>
+
       <div class="info">
-        Encryption: C = K × P (mod 26)<br><br>
-        Decryption: P = K⁻¹ × C (mod 26)<br><br>
-        For a 2 × 2 key, letters are processed in pairs.
-        If the plaintext contains an odd number of letters,
-        X is appended before encryption.
+        <b>Encryption formula</b><br>
+        C = K × P (mod 26)<br><br>
+
+        <b>Decryption formula</b><br>
+        P = K⁻¹ × C (mod 26)<br><br>
+
+        For a 2 × 2 key, letters are processed in blocks of 2.<br>
+        For a 3 × 3 key, letters are processed in blocks of 3.<br><br>
+
+        If the message length is not divisible by the matrix size,
+        X is appended to complete the final block.
       </div>
+
       <div class="steps" id="hsteps">
-        The calculation steps will appear here after encryption.
+        Matrix calculations will appear here after encryption
+        or decryption.
       </div>
+
     </div>
 
   </section>
+
 </main>
 
 <footer>
@@ -456,13 +611,31 @@ footer {
 </footer>
 
 <script>
+
+// ========================================
+// SHARED FUNCTIONS
+// ========================================
+
 const $ = id => document.getElementById(id);
 
 function switchCipher(name) {
-  $('playfair').classList.toggle('hidden', name !== 'playfair');
-  $('hill').classList.toggle('hidden', name !== 'hill');
-  $('playTab').classList.toggle('active', name === 'playfair');
-  $('hillTab').classList.toggle('active', name === 'hill');
+
+  $('playfair').classList.toggle(
+    'hidden', name !== 'playfair'
+  );
+
+  $('hill').classList.toggle(
+    'hidden', name !== 'hill'
+  );
+
+  $('playTab').classList.toggle(
+    'active', name === 'playfair'
+  );
+
+  $('hillTab').classList.toggle(
+    'active', name === 'hill'
+  );
+
 }
 
 function mod(n, m = 26) {
@@ -473,279 +646,758 @@ function cleanText(s) {
   return s.toUpperCase().replace(/[^A-Z]/g, '');
 }
 
-// ---------------- PLAYFAIR ----------------
+function gcd(a, b) {
+
+  a = Math.abs(a);
+  b = Math.abs(b);
+
+  while (b) {
+    [a, b] = [b, a % b];
+  }
+
+  return a;
+}
+
+function modInverse(a, m) {
+
+  a = mod(a, m);
+
+  for (let i = 1; i < m; i++) {
+
+    if (mod(a * i, m) === 1) {
+      return i;
+    }
+
+  }
+
+  throw new Error(
+    'No modular inverse exists for this value.'
+  );
+
+}
+
+function showError(box, status, message) {
+
+  $(box).style.display = 'block';
+
+  $(status).textContent = message;
+
+  $(status).className = 'status error';
+
+  const output =
+    box === 'presult' ? 'poutput' : 'houtput';
+
+  $(output).textContent = 'Unable to process';
+
+}
+
+async function copyText(id) {
+
+  const text = $(id).textContent;
+
+  try {
+
+    await navigator.clipboard.writeText(text);
+
+    alert('Result copied to clipboard!');
+
+  } catch {
+
+    const area = document.createElement('textarea');
+
+    area.value = text;
+
+    document.body.appendChild(area);
+
+    area.select();
+
+    document.execCommand('copy');
+
+    area.remove();
+
+    alert('Result copied!');
+
+  }
+
+}
+
+
+// ========================================
+// PLAYFAIR CIPHER
+// ========================================
+
+// Generate 5x5 matrix from keyword
 
 function makeGrid(key) {
+
   let chars = cleanText(key).replace(/J/g, 'I');
+
   let result = '';
-  for (const ch of chars + 'ABCDEFGHIKLMNOPQRSTUVWXYZ') {
-    if (!result.includes(ch)) result += ch;
+
+  const alphabet = 'ABCDEFGHIKLMNOPQRSTUVWXYZ';
+
+  for (const ch of chars + alphabet) {
+
+    if (!result.includes(ch)) {
+      result += ch;
+    }
+
   }
+
   return result;
+
 }
+
+
+// Display Playfair matrix
 
 function showGrid(grid) {
+
   $('pgrid').innerHTML = '';
+
   for (const ch of grid) {
+
     const cell = document.createElement('div');
+
     cell.className = 'cell';
+
     cell.textContent = ch;
+
     $('pgrid').appendChild(cell);
+
   }
+
 }
 
+
+// Prepare plaintext into digraphs
+
 function preparePairs(text) {
+
   const s = cleanText(text).replace(/J/g, 'I');
+
   const pairs = [];
+
   let i = 0;
 
   while (i < s.length) {
+
     const a = s[i];
+
     const b = s[i + 1];
 
     if (!b) {
+
+      // Final single letter
       pairs.push(a + 'X');
+
       i++;
+
     } else if (a === b) {
+
+      // Repeated letters
       pairs.push(a + 'X');
+
       i++;
+
     } else {
+
       pairs.push(a + b);
+
       i += 2;
+
     }
+
   }
+
   return pairs;
+
 }
 
+
+// Playfair encryption and decryption
+
 function playfairTransform(text, grid, decrypt) {
+
   const pairs = decrypt
-    ? (text.match(/.{1,2}/g) || [])
+    ? (text.match(/.{2}/g) || [])
     : preparePairs(text);
 
-  if (decrypt && pairs.some(p => p.length !== 2)) {
-    throw new Error('Ciphertext must contain an even number of letters.');
+  if (!text.length) {
+    throw new Error('Enter a message.');
+  }
+
+  if (decrypt && text.length % 2 !== 0) {
+
+    throw new Error(
+      'Ciphertext must contain an even number of letters.'
+    );
+
   }
 
   let output = '';
 
   for (const pair of pairs) {
+
     const a = pair[0];
+
     const b = pair[1];
 
     const i = grid.indexOf(a);
+
     const j = grid.indexOf(b);
 
     if (i < 0 || j < 0) {
+
       throw new Error('Invalid character in input.');
+
     }
 
-    const r1 = Math.floor(i / 5), c1 = i % 5;
-    const r2 = Math.floor(j / 5), c2 = j % 5;
+    const r1 = Math.floor(i / 5);
+
+    const c1 = i % 5;
+
+    const r2 = Math.floor(j / 5);
+
+    const c2 = j % 5;
 
     let x, y;
 
     if (r1 === r2) {
+
+      // Same row
+
       const shift = decrypt ? 4 : 1;
+
       x = r1 * 5 + mod(c1 + shift, 5);
+
       y = r2 * 5 + mod(c2 + shift, 5);
+
     } else if (c1 === c2) {
+
+      // Same column
+
       const shift = decrypt ? 4 : 1;
+
       x = mod(r1 + shift, 5) * 5 + c1;
+
       y = mod(r2 + shift, 5) * 5 + c2;
+
     } else {
+
+      // Rectangle rule
+
       x = r1 * 5 + c2;
+
       y = r2 * 5 + c1;
+
     }
 
     output += grid[x] + grid[y];
+
   }
 
-  return { output, pairs };
+  return {
+    output,
+    pairs
+  };
+
 }
 
+
+// Run Playfair
+
 function runPlayfair(mode) {
+
   try {
+
     const key = $('pkey').value;
-    const text = cleanText($('ptext').value);
-    if (!key.trim()) throw new Error('Enter a keyword.');
-    if (!text) throw new Error('Enter a message.');
+
+    const text = cleanText(
+      $('ptext').value
+    ).replace(/J/g, 'I');
+
+    if (!key.trim()) {
+      throw new Error('Enter a keyword.');
+    }
+
+    if (!text) {
+      throw new Error('Enter a message.');
+    }
 
     const grid = makeGrid(key);
+
     showGrid(grid);
 
-    const result = playfairTransform(text, grid, mode === 'decrypt');
+    const result = playfairTransform(
+      text,
+      grid,
+      mode === 'decrypt'
+    );
 
     $('presult').style.display = 'block';
+
     $('presultTitle').textContent =
-      mode === 'encrypt' ? 'CIPHERTEXT' : 'DECRYPTED PLAINTEXT';
+      mode === 'encrypt'
+        ? 'CIPHERTEXT'
+        : 'DECRYPTED PLAINTEXT';
+
     $('poutput').textContent = result.output;
+
     $('pstatus').textContent =
-      'Processed pairs: ' + result.pairs.join('  |  ') +
+      'Processed pairs: ' +
+      result.pairs.join(' | ') +
       (mode === 'encrypt'
         ? ' · X is used as a filler when required.'
         : ' · Filler X characters are not automatically removed.');
+
     $('pstatus').className = 'status';
+
   } catch (e) {
-    showError('presult', 'pstatus', e.message);
+
+    showError(
+      'presult',
+      'pstatus',
+      e.message
+    );
+
   }
+
 }
+
+
+// Clear Playfair
 
 function clearPlayfair() {
+
   $('ptext').value = '';
+
   $('presult').style.display = 'none';
+
 }
 
-// ---------------- HILL CIPHER ----------------
+
+// ========================================
+// HILL CIPHER
+// ========================================
+
+// Generate dynamic matrix inputs
+
+function renderMatrix() {
+
+  const n = Number($('matrixSize').value);
+
+  const container = $('hillMatrix');
+
+  container.style.setProperty('--matrix-size', n);
+
+  container.innerHTML = '';
+
+  // Default invertible matrices
+
+  const defaults = n === 2
+
+    ? [3, 3, 2, 5]
+
+    : [
+        6, 24, 1,
+        13, 16, 10,
+        20, 17, 15
+      ];
+
+  for (let i = 0; i < n * n; i++) {
+
+    const input = document.createElement('input');
+
+    input.type = 'number';
+
+    input.id = 'k' + i;
+
+    input.value = defaults[i];
+
+    input.setAttribute(
+      'aria-label',
+      'Matrix element ' + (i + 1)
+    );
+
+    container.appendChild(input);
+
+  }
+
+}
+
+
+// Read the dynamic matrix
 
 function getKey() {
-  const k = [
-    [Number($('k00').value), Number($('k01').value)],
-    [Number($('k10').value), Number($('k11').value)]
-  ];
 
-  if (k.flat().some(n => !Number.isInteger(n))) {
-    throw new Error('Enter integer values for all matrix elements.');
+  const n = Number($('matrixSize').value);
+
+  const values = [];
+
+  for (let i = 0; i < n * n; i++) {
+
+    const value = $('k' + i).value;
+
+    if (
+      value.trim() === '' ||
+      !Number.isInteger(Number(value))
+    ) {
+
+      throw new Error(
+        'Enter integer values in every matrix field.'
+      );
+
+    }
+
+    values.push(mod(Number(value)));
+
   }
 
-  return k.map(row => row.map(n => mod(n)));
-}
+  const matrix = [];
 
-function gcd(a, b) {
-  while (b) [a, b] = [b, a % b];
-  return Math.abs(a);
-}
+  for (let i = 0; i < n; i++) {
 
-function modInverse(a, m) {
-  a = mod(a, m);
-  for (let i = 1; i < m; i++) {
-    if (mod(a * i, m) === 1) return i;
+    matrix.push(
+      values.slice(i * n, (i + 1) * n)
+    );
+
   }
-  throw new Error('No modular inverse exists.');
+
+  return matrix;
+
 }
 
-function inverseKey(k) {
-  const det = mod(k[0][0] * k[1][1] -
-                  k[0][1] * k[1][0]);
+
+// Determinant of square matrix
+
+function determinant(matrix) {
+
+  const n = matrix.length;
+
+  if (n === 1) {
+    return matrix[0][0];
+  }
+
+  if (n === 2) {
+
+    return (
+      matrix[0][0] * matrix[1][1] -
+      matrix[0][1] * matrix[1][0]
+    );
+
+  }
+
+  let det = 0;
+
+  for (let j = 0; j < n; j++) {
+
+    const minor = matrix
+      .slice(1)
+      .map(row =>
+        row.filter((_, col) => col !== j)
+      );
+
+    const sign = j % 2 === 0 ? 1 : -1;
+
+    det += sign *
+      matrix[0][j] *
+      determinant(minor);
+
+  }
+
+  return det;
+
+}
+
+
+// Generate a minor matrix
+
+function minorMatrix(matrix, row, col) {
+
+  return matrix
+
+    .filter((_, r) => r !== row)
+
+    .map(r =>
+      r.filter((_, c) => c !== col)
+    );
+
+}
+
+
+// Calculate inverse matrix modulo 26
+
+function inverseKey(matrix) {
+
+  const n = matrix.length;
+
+  const det = mod(determinant(matrix));
 
   if (gcd(det, 26) !== 1) {
+
     throw new Error(
-      'Invalid key: determinant ' + det +
-      ' is not relatively prime to 26. Choose an invertible matrix.'
+      'Invalid key: determinant is ' + det +
+      '. It must be relatively prime to 26. ' +
+      'Change the matrix values.'
     );
+
   }
 
   const invDet = modInverse(det, 26);
 
-  return [
-    [mod(k[1][1] * invDet), mod(-k[0][1] * invDet)],
-    [mod(-k[1][0] * invDet), mod(k[0][0] * invDet)]
-  ];
+  // Special case for 2x2 matrix
+
+  if (n === 2) {
+
+    return [
+
+      [
+        mod(matrix[1][1] * invDet),
+        mod(-matrix[0][1] * invDet)
+      ],
+
+      [
+        mod(-matrix[1][0] * invDet),
+        mod(matrix[0][0] * invDet)
+      ]
+
+    ];
+
+  }
+
+  // Cofactor matrix for 3x3
+
+  const cofactors = [];
+
+  for (let i = 0; i < n; i++) {
+
+    const row = [];
+
+    for (let j = 0; j < n; j++) {
+
+      const minor = minorMatrix(
+        matrix,
+        i,
+        j
+      );
+
+      const sign =
+        (i + j) % 2 === 0 ? 1 : -1;
+
+      const cofactor =
+        sign * determinant(minor);
+
+      row.push(
+        mod(cofactor * invDet)
+      );
+
+    }
+
+    cofactors.push(row);
+
+  }
+
+  // Transpose cofactor matrix to obtain adjugate
+
+  const inverse = cofactors[0].map(
+    (_, j) => cofactors.map(row => row[j])
+  );
+
+  return inverse;
+
 }
 
-function hillTransform(text, k, decrypt) {
-  const inv = decrypt ? inverseKey(k) : null;
-  const matrix = decrypt ? inv : k;
+
+// Hill encryption and decryption
+
+function hillTransform(text, key, decrypt) {
+
+  const n = key.length;
+
+  const matrix = decrypt
+    ? inverseKey(key)
+    : key;
 
   let s = cleanText(text);
+
   let padded = false;
 
-  if (!decrypt && s.length % 2 !== 0) {
-    s += 'X';
-    padded = true;
+  if (!s.length) {
+
+    throw new Error('Enter a message.');
+
   }
 
-  if (s.length % 2 !== 0) {
-    throw new Error('Ciphertext must contain an even number of letters.');
-  }
+  // Add padding for encryption
 
-  if (!s.length) throw new Error('Enter a message.');
+  if (!decrypt) {
+
+    while (s.length % n !== 0) {
+
+      s += 'X';
+
+      padded = true;
+
+    }
+
+  } else if (s.length % n !== 0) {
+
+    throw new Error(
+      'Ciphertext length must be divisible by ' +
+      n + ' for a ' + n + '×' + n + ' matrix.'
+    );
+
+  }
 
   let output = '';
-  let steps = [];
 
-  for (let i = 0; i < s.length; i += 2) {
-    const a = s.charCodeAt(i) - 65;
-    const b = s.charCodeAt(i + 1) - 65;
+  const steps = [];
 
-    const x = mod(matrix[0][0] * a + matrix[0][1] * b);
-    const y = mod(matrix[1][0] * a + matrix[1][1] * b);
+  // Process blocks of n letters
 
-    output += String.fromCharCode(x + 65, y + 65);
+  for (let i = 0; i < s.length; i += n) {
+
+    const vector = [];
+
+    for (let j = 0; j < n; j++) {
+
+      vector.push(
+        s.charCodeAt(i + j) - 65
+      );
+
+    }
+
+    const result = [];
+
+    // Matrix multiplication
+
+    for (let r = 0; r < n; r++) {
+
+      let sum = 0;
+
+      for (let c = 0; c < n; c++) {
+
+        sum += matrix[r][c] * vector[c];
+
+      }
+
+      result.push(mod(sum));
+
+    }
+
+    output += result.map(
+      v => String.fromCharCode(v + 65)
+    ).join('');
 
     steps.push(
-      '[' + a + ', ' + b + '] → [' + x + ', ' + y + ']'
+      '[' + vector.join(', ') +
+      '] → [' + result.join(', ') + ']'
     );
+
   }
 
-  return { output, padded, steps, inverse: inv };
+  return {
+    output,
+    padded,
+    steps
+  };
+
 }
 
-function runHill(mode) {
-  try {
-    const k = getKey();
-    const text = $('htext').value;
 
-    // Validate key for both encryption and decryption.
-    const inverse = inverseKey(k);
-    const result = hillTransform(text, k, mode === 'decrypt');
+// Run Hill Cipher
+
+function runHill(mode) {
+
+  try {
+
+    const key = getKey();
+
+    const n = key.length;
+
+    const det = mod(determinant(key));
+
+    // Validate invertibility
+
+    const inverse = inverseKey(key);
+
+    const result = hillTransform(
+      $('htext').value,
+      key,
+      mode === 'decrypt'
+    );
 
     $('hresult').style.display = 'block';
+
     $('hresultTitle').textContent =
-      mode === 'encrypt' ? 'CIPHERTEXT' : 'DECRYPTED PLAINTEXT';
+      mode === 'encrypt'
+        ? 'CIPHERTEXT'
+        : 'DECRYPTED PLAINTEXT';
+
     $('houtput').textContent = result.output;
 
     $('hstatus').textContent =
-      'Key determinant: ' +
-      mod(k[0][0] * k[1][1] - k[0][1] * k[1][0]) +
-      ' · Modular inverse exists.' +
-      (result.padded ? ' · X appended to complete the final pair.' : '');
+      n + '×' + n +
+      ' matrix · Determinant: ' + det +
+      ' · Valid modular inverse.' +
+      (result.padded
+        ? ' · X appended to complete the final block.'
+        : '');
 
     $('hstatus').className = 'status';
 
     $('hsteps').textContent =
-      'Key inverse modulo 26: [[' +
-      inverse[0].join(', ') + '], [' +
-      inverse[1].join(', ') + ']]\n\n' +
-      'Letter-pair calculations (A=0):\n' +
+      'Inverse key modulo 26:\n' +
+
+      inverse.map(
+        row => '[' + row.join(', ') + ']'
+      ).join('\n') +
+
+      '\n\nBlock calculations (A=0):\n' +
+
       result.steps.join('\n');
+
   } catch (e) {
-    showError('hresult', 'hstatus', e.message);
+
+    showError(
+      'hresult',
+      'hstatus',
+      e.message
+    );
+
     $('hsteps').textContent = e.message;
+
   }
+
 }
+
+
+// Clear Hill Cipher
 
 function clearHill() {
+
   $('htext').value = '';
+
   $('hresult').style.display = 'none';
+
   $('hsteps').textContent = '';
+
 }
 
-function showError(box, status, message) {
-  $(box).style.display = 'block';
-  $(status).textContent = message;
-  $(status).className = 'status error';
-  const output = box === 'presult' ? 'poutput' : 'houtput';
-  $(output).textContent = 'Unable to process';
-}
 
-async function copyText(id) {
-  const text = $(id).textContent;
-  try {
-    await navigator.clipboard.writeText(text);
-    alert('Result copied to clipboard!');
-  } catch {
-    const area = document.createElement('textarea');
-    area.value = text;
-    document.body.appendChild(area);
-    area.select();
-    document.execCommand('copy');
-    area.remove();
-    alert('Result copied!');
-  }
-}
+// ========================================
+// INITIALIZE WEBSITE
+// ========================================
 
-// Initial matrix
+// Default Playfair matrix
+
 showGrid(makeGrid('MONARCHY'));
+
+// Default Hill matrix (2x2)
+
+renderMatrix();
+
 </script>
 
 </body>
