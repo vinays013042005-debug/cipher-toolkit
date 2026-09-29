@@ -1,0 +1,752 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CipherLab | Encryption Studio</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #080d19;
+  --panel: #111a2b;
+  --border: #26334a;
+  --text: #f1f5ff;
+  --muted: #91a0bb;
+  --accent: #7c6cff;
+  --cyan: #48d9e8;
+  --green: #50e3a4;
+  --red: #ff7185;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, sans-serif;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 6%;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.logo span { color: var(--cyan); }
+
+.tag {
+  font-size: 12px;
+  color: var(--green);
+  border: 1px solid #245943;
+  padding: 7px 12px;
+  border-radius: 30px;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 45px 20px;
+}
+
+.hero { text-align: center; margin-bottom: 35px; }
+
+.hero h1 {
+  font-size: clamp(30px, 5vw, 48px);
+  margin: 0 0 12px;
+  letter-spacing: -2px;
+}
+
+.hero h1 span {
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.tab {
+  padding: 13px 25px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--muted);
+  background: var(--panel);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 26px;
+  margin-bottom: 22px;
+}
+
+.card h2 { font-size: 19px; margin: 0 0 8px; }
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+label {
+  display: block;
+  color: #bdc9df;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 9px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 14px;
+  background: #0a1221;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--accent);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.6;
+}
+
+.field { margin-bottom: 20px; }
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 20px;
+}
+
+.primary {
+  background: var(--accent);
+  color: white;
+}
+
+.secondary {
+  background: #1c2940;
+  color: white;
+  border: 1px solid var(--border);
+}
+
+button:hover { filter: brightness(1.15); }
+
+.result {
+  background: #0a1221;
+  border: 1px solid #34445e;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 24px;
+  display: none;
+}
+
+.result h3 {
+  color: var(--green);
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.output {
+  font-size: 20px;
+  letter-spacing: 2px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.status {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.error { color: var(--red); }
+
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(2, 75px);
+  gap: 10px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.matrix input {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 14px 5px;
+}
+
+.grid5 {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  max-width: 350px;
+  margin: 22px auto;
+}
+
+.cell {
+  background: #1c2940;
+  border: 1px solid #34445e;
+  border-radius: 9px;
+  padding: 14px 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.steps {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+  margin-top: 18px;
+}
+
+.info {
+  background: #0b1425;
+  border-left: 3px solid var(--cyan);
+  padding: 15px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.hidden { display: none; }
+
+footer {
+  text-align: center;
+  padding: 30px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media(max-width:650px) {
+  main { padding: 30px 14px; }
+  .card { padding: 19px; }
+  .row { grid-template-columns: 1fr; gap: 0; }
+  .tabs { gap: 8px; }
+  .tab { padding: 12px 15px; font-size: 13px; }
+  header { padding: 18px; }
+  .tag { font-size: 10px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Cipher<span>Lab.</span></div>
+  <div class="tag">CLASSICAL CRYPTOGRAPHY</div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Encryption <span>Studio</span></h1>
+    <p>
+      Explore classical cryptography through interactive encryption
+      and decryption tools.
+    </p>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" id="playTab"
+      onclick="switchCipher('playfair')">Playfair Cipher</button>
+    <button class="tab" id="hillTab"
+      onclick="switchCipher('hill')">Hill Cipher</button>
+  </div>
+
+  <!-- PLAYFAIR CIPHER -->
+
+  <section id="playfair">
+
+    <div class="card">
+      <h2>Playfair Cipher</h2>
+      <p class="subtitle">
+        Encrypt or decrypt using a 5 × 5 key matrix.
+        I and J are treated as the same letter.
+      </p>
+
+      <div class="field">
+        <label for="pkey">Secret Keyword</label>
+        <input id="pkey" value="MONARCHY"
+          placeholder="Enter keyword">
+      </div>
+
+      <div class="field">
+        <label for="ptext">Input Message</label>
+        <textarea id="ptext"
+          placeholder="Enter plaintext or ciphertext...">HELLO</textarea>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" onclick="runPlayfair('encrypt')">
+          Encrypt →
+        </button>
+        <button class="secondary" onclick="runPlayfair('decrypt')">
+          ← Decrypt
+        </button>
+        <button class="secondary" onclick="clearPlayfair()">
+          Clear
+        </button>
+      </div>
+
+      <div id="presult" class="result">
+        <h3 id="presultTitle">CIPHERTEXT</h3>
+        <div class="output" id="poutput"></div>
+        <div class="buttons">
+          <button class="secondary" onclick="copyText('poutput')">
+            Copy Result
+          </button>
+        </div>
+        <div class="status" id="pstatus"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>5 × 5 Playfair Key Matrix</h2>
+      <p class="subtitle">
+        The matrix is automatically generated from your keyword.
+        Duplicate letters are removed and J is merged with I.
+      </p>
+      <div class="grid5" id="pgrid"></div>
+      <div class="info">
+        Same row: move right for encryption.<br>
+        Same column: move down for encryption.<br>
+        Rectangle: exchange the columns of the two letters.
+        Decryption reverses the row and column directions.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- HILL CIPHER -->
+
+  <section id="hill" class="hidden">
+
+    <div class="card">
+      <h2>Hill Cipher</h2>
+      <p class="subtitle">
+        Matrix-based encryption using modular arithmetic.
+        Enter a 2 × 2 key matrix with an inverse modulo 26.
+      </p>
+
+      <label>Key Matrix (2 × 2)</label>
+      <div class="matrix">
+        <input id="k00" type="number" value="3" aria-label="Row 1 column 1">
+        <input id="k01" type="number" value="3" aria-label="Row 1 column 2">
+        <input id="k10" type="number" value="2" aria-label="Row 2 column 1">
+        <input id="k11" type="number" value="5" aria-label="Row 2 column 2">
+      </div>
+
+      <div class="info">
+        Default key: [[3, 3], [2, 5]].<br>
+        A = 0, B = 1, ..., Z = 25.<br>
+        The determinant must be relatively prime to 26.
+      </div>
+
+      <div class="field" style="margin-top:22px">
+        <label for="htext">Input Message</label>
+        <textarea id="htext"
+          placeholder="Enter plaintext or ciphertext...">HI</textarea>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" onclick="runHill('encrypt')">
+          Encrypt →
+        </button>
+        <button class="secondary" onclick="runHill('decrypt')">
+          ← Decrypt
+        </button>
+        <button class="secondary" onclick="clearHill()">
+          Clear
+        </button>
+      </div>
+
+      <div id="hresult" class="result">
+        <h3 id="hresultTitle">CIPHERTEXT</h3>
+        <div class="output" id="houtput"></div>
+        <div class="buttons">
+          <button class="secondary" onclick="copyText('houtput')">
+            Copy Result
+          </button>
+        </div>
+        <div class="status" id="hstatus"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>How Hill Cipher Works</h2>
+      <div class="info">
+        Encryption: C = K × P (mod 26)<br><br>
+        Decryption: P = K⁻¹ × C (mod 26)<br><br>
+        For a 2 × 2 key, letters are processed in pairs.
+        If the plaintext contains an odd number of letters,
+        X is appended before encryption.
+      </div>
+      <div class="steps" id="hsteps">
+        The calculation steps will appear here after encryption.
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  CipherLab · Educational Cryptography Project · GitHub Pages
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function switchCipher(name) {
+  $('playfair').classList.toggle('hidden', name !== 'playfair');
+  $('hill').classList.toggle('hidden', name !== 'hill');
+  $('playTab').classList.toggle('active', name === 'playfair');
+  $('hillTab').classList.toggle('active', name === 'hill');
+}
+
+function mod(n, m = 26) {
+  return ((n % m) + m) % m;
+}
+
+function cleanText(s) {
+  return s.toUpperCase().replace(/[^A-Z]/g, '');
+}
+
+// ---------------- PLAYFAIR ----------------
+
+function makeGrid(key) {
+  let chars = cleanText(key).replace(/J/g, 'I');
+  let result = '';
+  for (const ch of chars + 'ABCDEFGHIKLMNOPQRSTUVWXYZ') {
+    if (!result.includes(ch)) result += ch;
+  }
+  return result;
+}
+
+function showGrid(grid) {
+  $('pgrid').innerHTML = '';
+  for (const ch of grid) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.textContent = ch;
+    $('pgrid').appendChild(cell);
+  }
+}
+
+function preparePairs(text) {
+  const s = cleanText(text).replace(/J/g, 'I');
+  const pairs = [];
+  let i = 0;
+
+  while (i < s.length) {
+    const a = s[i];
+    const b = s[i + 1];
+
+    if (!b) {
+      pairs.push(a + 'X');
+      i++;
+    } else if (a === b) {
+      pairs.push(a + 'X');
+      i++;
+    } else {
+      pairs.push(a + b);
+      i += 2;
+    }
+  }
+  return pairs;
+}
+
+function playfairTransform(text, grid, decrypt) {
+  const pairs = decrypt
+    ? (text.match(/.{1,2}/g) || [])
+    : preparePairs(text);
+
+  if (decrypt && pairs.some(p => p.length !== 2)) {
+    throw new Error('Ciphertext must contain an even number of letters.');
+  }
+
+  let output = '';
+
+  for (const pair of pairs) {
+    const a = pair[0];
+    const b = pair[1];
+
+    const i = grid.indexOf(a);
+    const j = grid.indexOf(b);
+
+    if (i < 0 || j < 0) {
+      throw new Error('Invalid character in input.');
+    }
+
+    const r1 = Math.floor(i / 5), c1 = i % 5;
+    const r2 = Math.floor(j / 5), c2 = j % 5;
+
+    let x, y;
+
+    if (r1 === r2) {
+      const shift = decrypt ? 4 : 1;
+      x = r1 * 5 + mod(c1 + shift, 5);
+      y = r2 * 5 + mod(c2 + shift, 5);
+    } else if (c1 === c2) {
+      const shift = decrypt ? 4 : 1;
+      x = mod(r1 + shift, 5) * 5 + c1;
+      y = mod(r2 + shift, 5) * 5 + c2;
+    } else {
+      x = r1 * 5 + c2;
+      y = r2 * 5 + c1;
+    }
+
+    output += grid[x] + grid[y];
+  }
+
+  return { output, pairs };
+}
+
+function runPlayfair(mode) {
+  try {
+    const key = $('pkey').value;
+    const text = cleanText($('ptext').value);
+    if (!key.trim()) throw new Error('Enter a keyword.');
+    if (!text) throw new Error('Enter a message.');
+
+    const grid = makeGrid(key);
+    showGrid(grid);
+
+    const result = playfairTransform(text, grid, mode === 'decrypt');
+
+    $('presult').style.display = 'block';
+    $('presultTitle').textContent =
+      mode === 'encrypt' ? 'CIPHERTEXT' : 'DECRYPTED PLAINTEXT';
+    $('poutput').textContent = result.output;
+    $('pstatus').textContent =
+      'Processed pairs: ' + result.pairs.join('  |  ') +
+      (mode === 'encrypt'
+        ? ' · X is used as a filler when required.'
+        : ' · Filler X characters are not automatically removed.');
+    $('pstatus').className = 'status';
+  } catch (e) {
+    showError('presult', 'pstatus', e.message);
+  }
+}
+
+function clearPlayfair() {
+  $('ptext').value = '';
+  $('presult').style.display = 'none';
+}
+
+// ---------------- HILL CIPHER ----------------
+
+function getKey() {
+  const k = [
+    [Number($('k00').value), Number($('k01').value)],
+    [Number($('k10').value), Number($('k11').value)]
+  ];
+
+  if (k.flat().some(n => !Number.isInteger(n))) {
+    throw new Error('Enter integer values for all matrix elements.');
+  }
+
+  return k.map(row => row.map(n => mod(n)));
+}
+
+function gcd(a, b) {
+  while (b) [a, b] = [b, a % b];
+  return Math.abs(a);
+}
+
+function modInverse(a, m) {
+  a = mod(a, m);
+  for (let i = 1; i < m; i++) {
+    if (mod(a * i, m) === 1) return i;
+  }
+  throw new Error('No modular inverse exists.');
+}
+
+function inverseKey(k) {
+  const det = mod(k[0][0] * k[1][1] -
+                  k[0][1] * k[1][0]);
+
+  if (gcd(det, 26) !== 1) {
+    throw new Error(
+      'Invalid key: determinant ' + det +
+      ' is not relatively prime to 26. Choose an invertible matrix.'
+    );
+  }
+
+  const invDet = modInverse(det, 26);
+
+  return [
+    [mod(k[1][1] * invDet), mod(-k[0][1] * invDet)],
+    [mod(-k[1][0] * invDet), mod(k[0][0] * invDet)]
+  ];
+}
+
+function hillTransform(text, k, decrypt) {
+  const inv = decrypt ? inverseKey(k) : null;
+  const matrix = decrypt ? inv : k;
+
+  let s = cleanText(text);
+  let padded = false;
+
+  if (!decrypt && s.length % 2 !== 0) {
+    s += 'X';
+    padded = true;
+  }
+
+  if (s.length % 2 !== 0) {
+    throw new Error('Ciphertext must contain an even number of letters.');
+  }
+
+  if (!s.length) throw new Error('Enter a message.');
+
+  let output = '';
+  let steps = [];
+
+  for (let i = 0; i < s.length; i += 2) {
+    const a = s.charCodeAt(i) - 65;
+    const b = s.charCodeAt(i + 1) - 65;
+
+    const x = mod(matrix[0][0] * a + matrix[0][1] * b);
+    const y = mod(matrix[1][0] * a + matrix[1][1] * b);
+
+    output += String.fromCharCode(x + 65, y + 65);
+
+    steps.push(
+      '[' + a + ', ' + b + '] → [' + x + ', ' + y + ']'
+    );
+  }
+
+  return { output, padded, steps, inverse: inv };
+}
+
+function runHill(mode) {
+  try {
+    const k = getKey();
+    const text = $('htext').value;
+
+    // Validate key for both encryption and decryption.
+    const inverse = inverseKey(k);
+    const result = hillTransform(text, k, mode === 'decrypt');
+
+    $('hresult').style.display = 'block';
+    $('hresultTitle').textContent =
+      mode === 'encrypt' ? 'CIPHERTEXT' : 'DECRYPTED PLAINTEXT';
+    $('houtput').textContent = result.output;
+
+    $('hstatus').textContent =
+      'Key determinant: ' +
+      mod(k[0][0] * k[1][1] - k[0][1] * k[1][0]) +
+      ' · Modular inverse exists.' +
+      (result.padded ? ' · X appended to complete the final pair.' : '');
+
+    $('hstatus').className = 'status';
+
+    $('hsteps').textContent =
+      'Key inverse modulo 26: [[' +
+      inverse[0].join(', ') + '], [' +
+      inverse[1].join(', ') + ']]\n\n' +
+      'Letter-pair calculations (A=0):\n' +
+      result.steps.join('\n');
+  } catch (e) {
+    showError('hresult', 'hstatus', e.message);
+    $('hsteps').textContent = e.message;
+  }
+}
+
+function clearHill() {
+  $('htext').value = '';
+  $('hresult').style.display = 'none';
+  $('hsteps').textContent = '';
+}
+
+function showError(box, status, message) {
+  $(box).style.display = 'block';
+  $(status).textContent = message;
+  $(status).className = 'status error';
+  const output = box === 'presult' ? 'poutput' : 'houtput';
+  $(output).textContent = 'Unable to process';
+}
+
+async function copyText(id) {
+  const text = $(id).textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    alert('Result copied to clipboard!');
+  } catch {
+    const area = document.createElement('textarea');
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+    alert('Result copied!');
+  }
+}
+
+// Initial matrix
+showGrid(makeGrid('MONARCHY'));
+</script>
+
+</body>
+</html>
