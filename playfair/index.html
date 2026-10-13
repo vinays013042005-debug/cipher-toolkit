@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive Playfair Cipher implementation for Cryptography and Network Security">
+  <title>Playfair Cipher | CNS VTU Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="playfair.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="#home">
+      <span class="brand-icon">🔐</span>
+      <span>
+        <strong>Playfair Cipher</strong>
+        <small>Cryptography &amp; Network Security</small>
+      </span>
+    </a>
+    <nav>
+      <a class="back" href="../index.html">◂ Toolkit</a>
+      <a href="#home">Home</a>
+      <a href="#encrypt">Encrypt</a>
+      <a href="#decrypt">Decrypt</a>
+      <a href="#matrix">Matrix</a>
+      <a href="#rules">Rules</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div>
+        <span class="eyebrow">VTU • CRYPTOGRAPHY &amp; NETWORK SECURITY</span>
+        <h1>Playfair <span>Cipher</span></h1>
+        <p class="hero-text">
+          An interactive web implementation of the classical Playfair digraph
+          substitution cipher. Generate the 5 × 5 key matrix, encrypt and
+          decrypt messages, and inspect every step of the algorithm.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#encrypt">Start Encryption</a>
+          <a class="btn secondary" href="#rules">View Rules</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="card-title-row">
+          <h2>Example Matrix</h2>
+          <span>MONARCHY</span>
+        </div>
+        <div id="heroMatrix" class="matrix small-matrix"></div>
+        <p class="muted">I and J share one position.</p>
+      </div>
+    </section>
+
+    <section class="section intro">
+      <div class="section-heading">
+        <span class="eyebrow">INTRODUCTION</span>
+        <h2>What is the Playfair Cipher?</h2>
+        <p>
+          Playfair encrypts plaintext two letters at a time, treating each pair
+          as a digraph. A keyword is used to construct a 5 × 5 matrix, with
+          I/J sharing one cell.
+        </p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">🔢</div>
+          <h3>Digraph Encryption</h3>
+          <p>Two plaintext letters are processed together instead of one at a time.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">⬜</div>
+          <h3>5 × 5 Matrix</h3>
+          <p>The keyword and remaining alphabet form a 25-cell Playfair matrix.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">🔑</div>
+          <h3>Keyword Based</h3>
+          <p>The keyword determines the order of letters in the cipher matrix.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="encrypt" class="section tool-section">
+      <div class="section-heading">
+        <span class="eyebrow">ENCRYPTION</span>
+        <h2>Encrypt a Message</h2>
+        <p>Enter a keyword and plaintext. The application shows preparation, pairs, matrix and every encryption rule used.</p>
+      </div>
+
+      <div class="tool-grid">
+        <div class="panel">
+          <label for="encryptKey">🔑 Keyword</label>
+          <input id="encryptKey" type="text" placeholder="Example: MONARCHY" autocomplete="off">
+
+          <label for="plaintext">📝 Plaintext</label>
+          <textarea id="plaintext" rows="7" placeholder="Example: BALLOON"></textarea>
+
+          <div class="button-row">
+            <button id="encryptBtn" class="btn primary full">Encrypt Message</button>
+            <button id="clearEncryptBtn" class="btn secondary full">Clear</button>
+          </div>
+          <p id="encryptStatus" class="status" aria-live="polite"></p>
+        </div>
+
+        <div class="panel">
+          <h3>Generated Matrix</h3>
+          <div id="encryptMatrix" class="matrix-box empty">Enter a keyword to generate the matrix.</div>
+
+          <div class="result-box">
+            <span>Prepared Plaintext</span>
+            <strong id="preparedText">—</strong>
+          </div>
+          <div class="result-box">
+            <span>Digraphs</span>
+            <strong id="encryptPairs">—</strong>
+          </div>
+          <div class="result-box highlight">
+            <span>🔐 Ciphertext</span>
+            <strong id="ciphertext">—</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel steps-panel">
+        <h3>Encryption Steps</h3>
+        <div id="encryptionSteps" class="empty">Encrypt a message to see the steps.</div>
+      </div>
+    </section>
+
+    <section id="decrypt" class="section tool-section alternate">
+      <div class="section-heading">
+        <span class="eyebrow">DECRYPTION</span>
+        <h2>Decrypt a Message</h2>
+        <p>Use the same keyword to reverse the Playfair transformation.</p>
+      </div>
+
+      <div class="tool-grid">
+        <div class="panel">
+          <label for="decryptKey">🔑 Keyword</label>
+          <input id="decryptKey" type="text" placeholder="Example: MONARCHY" autocomplete="off">
+
+          <label for="cipherInput">🔒 Ciphertext</label>
+          <textarea id="cipherInput" rows="7" placeholder="Example: CKGX..."></textarea>
+
+          <div class="button-row">
+            <button id="decryptBtn" class="btn success full">Decrypt Message</button>
+            <button id="clearDecryptBtn" class="btn secondary full">Clear</button>
+          </div>
+          <p id="decryptStatus" class="status" aria-live="polite"></p>
+        </div>
+
+        <div class="panel">
+          <h3>Generated Matrix</h3>
+          <div id="decryptMatrix" class="matrix-box empty">Enter a keyword to generate the matrix.</div>
+
+          <div class="result-box">
+            <span>Ciphertext Pairs</span>
+            <strong id="decryptPairs">—</strong>
+          </div>
+          <div class="result-box highlight success-box">
+            <span>🔓 Decrypted Plaintext</span>
+            <strong id="decryptedText">—</strong>
+          </div>
+          <div class="result-box">
+            <span>Optional: Remove likely filler X</span>
+            <strong id="cleanedDecryptedText">—</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel steps-panel">
+        <h3>Decryption Steps</h3>
+        <div id="decryptionSteps" class="empty">Decrypt a message to see the steps.</div>
+      </div>
+    </section>
+
+    <section id="matrix" class="section">
+      <div class="section-heading">
+        <span class="eyebrow">MATRIX GENERATOR</span>
+        <h2>Generate a 5 × 5 Matrix</h2>
+        <p>Try different keywords and see how the Playfair matrix changes.</p>
+      </div>
+
+      <div class="matrix-generator panel">
+        <input id="matrixKey" type="text" placeholder="Enter keyword..." autocomplete="off">
+        <button id="generateMatrixBtn" class="btn primary">Generate Matrix</button>
+      </div>
+      <div id="displayMatrix" class="matrix-large-box empty">Your matrix will appear here.</div>
+    </section>
+
+    <section id="rules" class="section rules-section">
+      <div class="section-heading">
+        <span class="eyebrow">ALGORITHM</span>
+        <h2>Rules of the Playfair Cipher</h2>
+        <p>These are the rules implemented by the website.</p>
+      </div>
+
+      <div class="rules-grid">
+        <article class="rule-card">
+          <span class="rule-number">01</span>
+          <div>
+            <h3>Repeated letters</h3>
+            <p>When both letters of a digraph are the same, insert a filler letter, normally X, between them.</p>
+            <code>BALLOON → BA LX LO ON</code>
+          </div>
+        </article>
+        <article class="rule-card">
+          <span class="rule-number">02</span>
+          <div>
+            <h3>Same row</h3>
+            <p>Replace each letter by the letter immediately to its right. The row wraps around at the end.</p>
+            <code>Right shift → circular wrap</code>
+          </div>
+        </article>
+        <article class="rule-card">
+          <span class="rule-number">03</span>
+          <div>
+            <h3>Same column</h3>
+            <p>Replace each letter by the letter immediately below it. The column wraps around at the bottom.</p>
+            <code>Down shift → circular wrap</code>
+          </div>
+        </article>
+        <article class="rule-card">
+          <span class="rule-number">04</span>
+          <div>
+            <h3>Rectangle rule</h3>
+            <p>For letters in different rows and columns, keep each row and exchange the columns.</p>
+            <code>HS → BP in the MONARCHY matrix</code>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="history">
+      <div class="section-heading">
+        <span class="eyebrow light">HISTORY</span>
+        <h2>A Classical Encryption Technique</h2>
+        <p>
+          Playfair was historically used as a field cipher and was used by the
+          British Army during World War I and by Allied forces during World War II.
+          It is more resistant to simple single-letter frequency analysis because
+          it operates on digraphs, although it is not considered secure by modern standards.
+        </p>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="section-heading">
+        <span class="eyebrow">PROJECT</span>
+        <h2>About This Project</h2>
+        <p>Interactive implementation for a VTU Cryptography &amp; Network Security project.</p>
+      </div>
+      <div class="details-grid">
+        <div><span>Subject</span><strong>Cryptography &amp; Network Security</strong></div>
+        <div><span>Platform</span><strong>GitHub Pages</strong></div>
+        <div><span>Technology</span><strong>HTML • CSS • JavaScript</strong></div>
+        <div><span>Cipher</span><strong>Playfair Digraph Cipher</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>🔐 Playfair Cipher</strong>
+    <span>VTU Cryptography &amp; Network Security Project</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

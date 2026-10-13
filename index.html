@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cipher Toolkit: interactive Playfair cipher and Man-in-the-Middle attack demos for Cryptography and Network Security (VTU).">
+  <title>Cipher Toolkit | CNS VTU Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/theme.css">
+  <style>
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
+    .hero { padding: 90px 0 40px; }
+    .hero h1 { font-size: clamp(3rem, 9vw, 6.5rem); font-weight: 700; letter-spacing: -0.04em; margin-top: 18px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h1 span::after { content: "_"; animation: blink 1s steps(2) infinite; }
+    .lead { max-width: 58ch; margin: 22px 0 0; color: var(--muted); font-size: 1.15rem; }
+
+    .ticker {
+      margin-top: 32px; padding: 14px 18px; overflow-x: auto; white-space: nowrap;
+      background: #060908; border: 2px solid var(--line); border-radius: var(--radius);
+      font-family: var(--font-mono); font-size: 0.95rem;
+    }
+    .ticker b { color: var(--accent); }
+    .ticker i { color: var(--muted); font-style: normal; }
+
+    .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 48px; }
+    .tool {
+      --c: var(--accent);
+      display: flex; flex-direction: column; gap: 14px; padding: 30px;
+      background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius);
+      transition: transform 0.14s, box-shadow 0.14s, border-color 0.14s;
+    }
+    .tool:hover { border-color: var(--c); transform: translate(-4px, -4px); box-shadow: 8px 8px 0 var(--c); }
+    .tool.playfair { --c: #ffb938; }
+    .tool.mitm { --c: #ff5d5d; }
+    .tool .num { font-family: var(--font-mono); font-size: 2.4rem; font-weight: 700; color: var(--c); line-height: 1; }
+    .tool h2 { font-size: 1.8rem; letter-spacing: -0.02em; }
+    .tool p { margin: 0; color: var(--muted); }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 6px; }
+    .tags span { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 9px; border: 1px solid var(--line); border-radius: var(--radius); color: var(--muted); }
+    .go { font-family: var(--font-mono); font-weight: 700; color: var(--c); }
+
+    .about { margin-top: 72px; padding-top: 28px; border-top: 2px solid var(--line); color: var(--muted); max-width: 70ch; }
+    footer { margin-top: 56px; }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="./">
+      <span class="brand-icon">🔐</span>
+      <span><strong>Cipher Toolkit</strong><small>Cryptography &amp; Network Security</small></span>
+    </a>
+    <nav>
+         <a href="playfair/index.html">Playfair</a>
+         <a href="mitm/index.html">Man-in-the-Middle</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">VTU • CRYPTOGRAPHY &amp; NETWORK SECURITY</span>
+      <h1>Cipher <span>Toolkit</span></h1>
+      <p class="lead">
+        Two interactive labs in one place. Encrypt with a classical digraph cipher,
+        then break a key exchange from the middle. Every step is shown, nothing is hidden.
+      </p>
+      <div class="ticker" aria-hidden="true"><i>caesar shift</i> <b id="shift">+3</b> <i>→</i> <span id="cipher"></span></div>
+    </section>
+
+    <section class="tools" aria-label="Tools">
+      <a class="tool playfair" href="playfair/index.html">
+        <span class="num">01</span>
+        <h2>Playfair Cipher</h2>
+        <p>Build the 5 × 5 key matrix, encrypt and decrypt digraphs, and inspect every rule that was applied.</p>
+        <div class="tags"><span>Substitution</span><span>Digraph</span><span>5×5 matrix</span></div>
+        <span class="go">Open lab →</span>
+      </a>
+      <a class="tool mitm" href="mitm/index.html">
+        <span class="num">02</span>
+        <h2>Man-in-the-Middle</h2>
+        <p>Step through an attack on Diffie-Hellman key exchange, then see how signatures and certificates stop it.</p>
+        <div class="tags"><span>Diffie-Hellman</span><span>Key exchange</span><span>Attack &amp; defence</span></div>
+        <span class="go">Open lab →</span>
+      </a>
+    </section>
+
+    <p class="about">For learning only. The numbers are small and the ciphers are simple, so nothing here is secure.</p>
+  </main>
+
+  <footer>
+    <strong>🔐 Cipher Toolkit</strong>
+    <span>VTU Cryptography &amp; Network Security Project</span>
+  </footer>
+
+  <script>
+    const PLAIN = "CRYPTOGRAPHY AND NETWORK SECURITY";
+    const shift = (s, n) => s.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0) - 65 + n) % 26 + 65));
+    const cipherEl = document.getElementById("cipher");
+    const shiftEl = document.getElementById("shift");
+    let n = 3;
+    const draw = () => { cipherEl.textContent = shift(PLAIN, n); shiftEl.textContent = "+" + n; };
+    draw();
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInterval(() => { n = n % 25 + 1; draw(); }, 900);
+    }
+  </script>
+</body>
+</html>
